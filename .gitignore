@@ -4,3 +4,6 @@
 */.prettierrc
 */.env
 */package-lock.json
+auth/certs/
+auth/custom-templates/
+auth/media/
