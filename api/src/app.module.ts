@@ -1,7 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from './logger.middleware';
-import { PruebaController } from './prueba/prueba.controller';
-import { PruebaService } from './prueba/prueba.service';
 import { DonationsController } from './donations/donations.controller';
 import { DonationsService } from './donations/donations.service';
 import { EntryticketsController } from './entrytickets/entrytickets.controller';
@@ -14,7 +12,7 @@ import { TournamentsController } from './tournaments/tournaments.controller';
 import { TransactionsController } from './transactions/transactions.controller';
 import { UsersController } from './users/users.controller';
 import { VideogamesController } from './videogames/videogames.controller';
-import { VideogamestypeController } from './videogamestypes/videogamestypes.controller';
+import { VideogametypesController } from './videogamestypes/videogametypes.controller';
 import { GamesService } from './games/games.service';
 import { PlatformsService } from './platforms/platforms.service';
 import { PrizesService } from './prizes/prizes.service';
@@ -22,12 +20,11 @@ import { TeamsService } from './teams/teams.service';
 import { TournamentService } from './tournaments/tournaments.service';
 import { UsersService } from './users/users.service';
 import { VideogamesService } from './videogames/videogames.service';
-import { VideogamestypesService } from './videogamestypes/videogamestypes.service';
+import { VideogametypesService } from './videogamestypes/videogametypes.service';
 
 @Module({
 	imports: [],
 	controllers: [
-		PruebaController, 
 		DonationsController, 
 		EntryticketsController,
 		GamesController,
@@ -38,10 +35,9 @@ import { VideogamestypesService } from './videogamestypes/videogamestypes.servic
 		TransactionsController,
 		UsersController,
 		VideogamesController,
-		VideogamestypeController
+		VideogametypesController
 	],
 	providers: [
-		PruebaService,
 		DonationsService,
 		EntryticketsService,
 		GamesService,
@@ -51,7 +47,7 @@ import { VideogamestypesService } from './videogamestypes/videogamestypes.servic
 		TournamentService,
 		UsersService,
 		VideogamesService,
-		VideogamestypesService
+		VideogametypesService
 	],
 })
 export class AppModule implements NestModule {

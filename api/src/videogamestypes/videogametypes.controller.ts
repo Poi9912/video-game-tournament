@@ -1,9 +1,9 @@
 import { Controller, Get, Req } from "@nestjs/common";
 
 @Controller('videogames-types')
-export class VideogamestypeController {
+export class VideogametypesController {
     @Get()
     findAll() {
-        return 'videogames-types';
+        return 'videogame-types';
     }
 }
