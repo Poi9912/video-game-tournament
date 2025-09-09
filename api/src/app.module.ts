@@ -1,5 +1,5 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { LoggerMiddleware } from './logger.middleware';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { LoggerMiddleware } from './middleware/logger';
 import { DonationsController } from './donations/donations.controller';
 import { DonationsService } from './donations/donations.service';
 import { EntryticketsController } from './entrytickets/entrytickets.controller';
@@ -25,7 +25,7 @@ import { VideogametypesService } from './videogamestypes/videogametypes.service'
 @Module({
 	imports: [],
 	controllers: [
-		DonationsController, 
+		DonationsController,
 		EntryticketsController,
 		GamesController,
 		PlatformsController,
@@ -50,9 +50,14 @@ import { VideogametypesService } from './videogamestypes/videogametypes.service'
 		VideogametypesService
 	],
 })
+
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 		consumer
 			.apply(LoggerMiddleware)
+			.forRoutes({
+				path: '*',
+				method: RequestMethod.ALL,
+			});
 	}
 }
