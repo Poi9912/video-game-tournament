@@ -21,6 +21,7 @@ import { TournamentService } from './tournaments/tournaments.service';
 import { UsersService } from './users/users.service';
 import { VideogamesService } from './videogames/videogames.service';
 import { VideogametypesService } from './videogamestypes/videogametypes.service';
+import { HealthController } from './health/games.controller';
 
 @Module({
 	imports: [],
@@ -35,7 +36,8 @@ import { VideogametypesService } from './videogamestypes/videogametypes.service'
 		TransactionsController,
 		UsersController,
 		VideogamesController,
-		VideogametypesController
+		VideogametypesController,
+		HealthController
 	],
 	providers: [
 		DonationsService,
