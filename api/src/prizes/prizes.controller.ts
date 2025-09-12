@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
-
 @Controller('prizes')
 export class PrizesController {
     @Get()

@@ -4,7 +4,6 @@ import { DonationsController } from './donations/donations.controller';
 import { DonationsService } from './donations/donations.service';
 import { EntryticketsController } from './entrytickets/entrytickets.controller';
 import { EntryticketsService } from './entrytickets/entrytickets.service';
-import { GamesController } from './games/games.controller';
 import { PlatformsController } from './platforms/platforms.controller';
 import { PrizesController } from './prizes/prizes.controller';
 import { TeamsController } from './teams/teams.controller';
@@ -13,7 +12,6 @@ import { TransactionsController } from './transactions/transactions.controller';
 import { UsersController } from './users/users.controller';
 import { VideogamesController } from './videogames/videogames.controller';
 import { VideogametypesController } from './videogamestypes/videogametypes.controller';
-import { GamesService } from './games/games.service';
 import { PlatformsService } from './platforms/platforms.service';
 import { PrizesService } from './prizes/prizes.service';
 import { TeamsService } from './teams/teams.service';
@@ -22,13 +20,15 @@ import { UsersService } from './users/users.service';
 import { VideogamesService } from './videogames/videogames.service';
 import { VideogametypesService } from './videogamestypes/videogametypes.service';
 import { HealthController } from './health/health.controller';
+import { matchesController } from './matches/matches.controller';
+import { MatchesService } from './matches/matches.service';
 
 @Module({
 	imports: [],
 	controllers: [
 		DonationsController,
 		EntryticketsController,
-		GamesController,
+		matchesController,
 		PlatformsController,
 		PrizesController,
 		TeamsController,
@@ -42,7 +42,7 @@ import { HealthController } from './health/health.controller';
 	providers: [
 		DonationsService,
 		EntryticketsService,
-		GamesService,
+		MatchesService,
 		PlatformsService,
 		PrizesService,
 		TeamsService,

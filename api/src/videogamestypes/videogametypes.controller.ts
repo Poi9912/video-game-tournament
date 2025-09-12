@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Videogame Type')
 @Controller('videogames-types')
 export class VideogametypesController {
     @Get()
