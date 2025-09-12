@@ -11,7 +11,7 @@ export class LoggerMiddleware implements NestMiddleware {
             'Method: ' + req.method + '\n' +
             'Path: ' + req.url + '\n' +
             'Params: ' + JSON.stringify(req.params) + '\n' +
-            ((req.method=='GET')? '' : ('Request Body: ' + JSON.stringify(req.body) + '\n' )) +
+            'Request Body: ' + JSON.stringify(req.body) + '\n' +
             'MessageID: ' + req.headers['message-id']
         );
         next();

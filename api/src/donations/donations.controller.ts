@@ -11,7 +11,7 @@ export class DonationsController {
     }
     @Get(':id')
     @HttpCode(200)
-    findGame(@Param() params: any): string {
+    findDonation(@Param() params: any): string {
         return `donation by id: #${params.id}`;
     }
 
@@ -20,14 +20,14 @@ export class DonationsController {
     createDonation(): string {
         return 'creates a donation';
     }
-    @Patch()
+    @Patch(':id')
     @HttpCode(200)
-    updateDonation(): string {
-        return 'modifies a donation';
+    updateDonation(@Param() params: any): string {
+        return `modifies donation by id: #${params.id}`;
     }
-    @Delete()
+    @Delete(':id')
     @HttpCode(200)
-    deleteDonation(): string {
-        return 'deletes donation';
+    deleteDonation(@Param() params: any): string {
+        return `deletes donation by id: #${params.id}`;
     }
 }
