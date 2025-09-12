@@ -20,7 +20,7 @@ import { UsersService } from './users/users.service';
 import { VideogamesService } from './videogames/videogames.service';
 import { VideogametypesService } from './videogamestypes/videogametypes.service';
 import { HealthController } from './health/health.controller';
-import { matchesController } from './matches/matches.controller';
+import { MatchesController } from './matches/matches.controller';
 import { MatchesService } from './matches/matches.service';
 
 @Module({
@@ -28,7 +28,7 @@ import { MatchesService } from './matches/matches.service';
 	controllers: [
 		DonationsController,
 		EntryticketsController,
-		matchesController,
+		MatchesController,
 		PlatformsController,
 		PrizesController,
 		TeamsController,

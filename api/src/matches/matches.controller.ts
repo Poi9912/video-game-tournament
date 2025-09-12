@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
 
 @Controller('matches')
-export class matchesController {
+export class MatchesController {
     @Get()
     findAll() {
         return 'matches';
