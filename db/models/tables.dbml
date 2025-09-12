@@ -1,0 +1,101 @@
+Table matches {
+  id integer [primary key]
+  tournament_id integer
+  team1_id integer
+  team2_id integer
+  event_date datetime
+  result text
+}
+
+Table teams {
+  id integer [primary key]
+  name text
+}
+
+Table prizes {
+  id integer [primary key]
+  tournament_id integer
+  quantity number
+  description text
+}
+
+Table transactions {
+  id integer [primary key]
+  user_id integer
+  tournament_id integer
+  quantity number
+  date datetime
+  status text
+  payment_method text
+  payment_reference text
+}
+
+Table platforms {
+  id integer [primary key]
+  name text
+}
+
+Table entry_tickets {
+  id integer [primary key]
+  user_id integer
+  tournament_id integer
+  quantity number
+  total_price number
+  sale_date datetime
+  usage bool
+}
+
+Table tournaments {
+  id integer [primary key]
+  name text
+  description text
+  videogame_id integer
+  start_date datetime
+  finish_date datetime
+  user_host integer
+}
+
+Table users {
+  id integer [primary key]
+  name text
+  email text
+  password text
+  register_date datetime
+}
+
+Table videogame_types {
+  id integer [primary key]
+  name text
+  competitive bool
+}
+
+Table videogames {
+  id integer [primary key]
+  name text
+  platform_id integer
+  type_id integer
+}
+
+Table donations {
+  id integer [primary key]
+  user_id integer
+  tournament_id integer
+  quantity number
+  date datetime
+}
+
+Ref: donations.user_id > users.id
+Ref: donations.tournament_id > tournaments.id
+Ref: matches.tournament_id > tournaments.id
+Ref: matches.team1_id > teams.id
+Ref: matches.team2_id > teams.id
+Ref: prizes.tournament_id > tournaments.id
+Ref: transactions.user_id > users.id
+Ref: transactions.tournament_id > tournaments.id
+Ref: videogames.type_id > videogame_types.id
+Ref: videogames.platform_id > platforms.id
+Ref: entry_tickets.user_id > users.id
+Ref: entry_tickets.tournament_id > tournaments.id
+Ref: tournaments.user_host > users.id
+Ref: tournaments.videogame_id > videogames.id
+
