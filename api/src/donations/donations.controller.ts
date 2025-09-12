@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { DonationDto } from "./dto/donation.dto";
+
+
 @Controller('donations')
 export class DonationsController {
     @Get()
@@ -14,12 +17,12 @@ export class DonationsController {
 
     @Post()
     @HttpCode(201)
-    createDonation(): string {
+    asynccreateDonation(@Body() DonationDto: DonationDto) {
         return 'creates a donation';
     }
     @Patch(':id')
     @HttpCode(200)
-    updateDonation(@Param() params: any): string {
+    updateDonation(@Param() params: any, @Body() DonationDto: DonationDto) {
         return `modifies donation by id: #${params.id}`;
     }
     @Delete(':id')
