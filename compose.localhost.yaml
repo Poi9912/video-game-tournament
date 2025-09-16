@@ -15,8 +15,8 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik_certs:/certs:ro
-      - traefik_dynamic:/etc/traefik/dynamic:ro
+      - ./auth/certs:/certs:ro
+      - ./auth/dynamic:/etc/traefik/dynamic:ro
     ports:
       - 443:443
       - 8080:8080
@@ -58,8 +58,6 @@ services:
       - 3000:3000
 volumes:
   kanidm_data: {}
-  traefik_certs: {}
-  traefik_dynamic: {}
 networks:
   proxy:
     name: proxy

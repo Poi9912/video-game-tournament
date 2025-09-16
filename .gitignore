@@ -6,3 +6,4 @@
 */package-lock.json
 api/build.sh
 *.sh
+auth/
