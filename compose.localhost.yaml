@@ -19,8 +19,8 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./proxy/certs:/certs:ro
-      - ./proxy/dynamic:/etc/traefik/dynamic:ro
+      - ./proxy/certs:/certs:rw
+      - ./proxy/dynamic:/etc/traefik/dynamic:rw
     ports:
       - 80:80
       - 443:443
