@@ -11,6 +11,7 @@ WORKDIR /api
 COPY --from=builder /api/dist /api/dist
 COPY --from=builder /api/package.json ./
 COPY --from=builder /api/node_modules ./node_modules
+RUN apk add --no-cache curl
 ENV NODE_ENV=production
 EXPOSE 3000
 CMD ["node","dist/main"]

@@ -4,6 +4,5 @@
 */.prettierrc
 */.env
 api/build.sh
-*.sh
 auth/
 proxy/

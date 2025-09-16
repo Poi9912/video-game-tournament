@@ -1,13 +1,18 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
-import { DonationDto } from "./dto/donation.dto";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { DonationReqDto } from "./dto/donationreq.dto";
+import { DonationsService } from './donations.service';
+import { DonationResDto } from './dto/donationres.dto';
+import { map } from "rxjs";
 
 
 @Controller('donations')
 export class DonationsController {
+    constructor(private readonly donationsService: DonationsService){}
+
     @Get()
     @HttpCode(200)
-    findAll(): string {
-        return 'donations';
+    async findAll() {
+        return this.donationsService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
@@ -17,12 +22,12 @@ export class DonationsController {
 
     @Post()
     @HttpCode(201)
-    asynccreateDonation(@Body() DonationDto: DonationDto) {
-        return 'creates a donation';
+    async createDonation(@Body() createDonation: DonationReqDto) {
+        return this.donationsService.postCreate(createDonation);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateDonation(@Param() params: any, @Body() DonationDto: DonationDto) {
+    updateDonation(@Param() params: any, @Body() updateDonation: DonationReqDto) {
         return `modifies donation by id: #${params.id}`;
     }
     @Delete(':id')

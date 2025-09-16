@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class DonationDto {
+export class DonationResDto {
+    @ApiProperty()
+    id: number;
     @ApiProperty()
     user_id: number;
     @ApiProperty()

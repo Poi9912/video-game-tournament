@@ -15,7 +15,10 @@ async function bootstrap() {
     const documentFactory  = () => SwaggerModule.createDocument(app, config);
 
     const swaggerPathPrefix = (process.env.APIVERSION ?? 'v1' ) + '/docs';
-    SwaggerModule.setup(swaggerPathPrefix,app,documentFactory)
+    const swaggerPathJson = swaggerPathPrefix + '/json';
+    SwaggerModule.setup(swaggerPathPrefix,app,documentFactory,{
+        jsonDocumentUrl: swaggerPathJson
+    })
 
     const prefix = (process.env.APIVERSION ?? 'v1');
     app.setGlobalPrefix(prefix);

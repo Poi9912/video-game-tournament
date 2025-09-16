@@ -46,14 +46,15 @@ services:
     build: api/.
     restart: unless-stopped
     environment:
-      - BASEURL=http://mocks:9000
-      - TIMEOUT=5000
+      - BASEURL=http://mocks:4010
       - APIPORT=3000
       - HOST=tournamentapi.localhost
       - APIVERSION=v1
       - ENV=sb
     expose:
       - 3000
+    ports:
+      - 3000:3000
     labels:
       - traefik.enable=true
       - traefik.http.routers.api.rule=Host("api.localhost")
@@ -69,5 +70,15 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - com.centurylinklabs.watchtower.enable=true
+  mocks:
+    build: mock/.
+    restart: unless-stopped
+    expose:
+      - 4010
+    ports:
+      - 4010:4010
+    depends_on:
+      api:
+        condition: service_started
 # volumes:
 #   kanidm_data: {}

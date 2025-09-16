@@ -22,9 +22,13 @@ import { VideogametypesService } from './videogamestypes/videogametypes.service'
 import { HealthController } from './health/health.controller';
 import { MatchesController } from './matches/matches.controller';
 import { MatchesService } from './matches/matches.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-	imports: [],
+	imports: [HttpModule.register({
+		timeout: 5000,
+		maxRedirects: 5,
+	})],
 	controllers: [
 		DonationsController,
 		EntryticketsController,
