@@ -3,7 +3,6 @@
 */dist/
 */.prettierrc
 */.env
-*/package-lock.json
 api/build.sh
 *.sh
 auth/

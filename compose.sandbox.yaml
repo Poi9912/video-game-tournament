@@ -7,14 +7,16 @@ services:
       - "--certificatesresolvers.http.acme.email=#{DOMAIN_REGISTER_EMAIL}"
       - "--certificatesresolvers.http.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.http.acme.tlschallenge=true"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.tls=true"
-      - "--entrypoints.websecure.http.tls.certResolver=http"
-      - "--log.level=INFO"
+      - "--api.insecure=false"
+      - "--api.dashboard=false"
       - "--providers.docker=true"
-      - "--providers.docker.exposedByDefault=false"
-      - "--serverstransport.insecureskipverify=true"
-      - com.centurylinklabs.watchtower.enable=true
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.websecure.http.tls=true"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -22,6 +24,8 @@ services:
       - ./auth/dynamic:/etc/traefik/dynamic:ro
     ports:
       - "443:443"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
   kanidm:
     container_name: kanidm
     image: kanidm/server:devel
@@ -33,8 +37,6 @@ services:
       - traefik.http.routers.kanidm.entrypoints=websecure
       - traefik.http.routers.kanidm.rule=Host(`auth.#{SANDBOX_HOST}`)
       - traefik.http.routers.kanidm.service=kanidm
-      - traefik.http.services.kanidm.loadbalancer.server.port=8443
-      - traefik.http.services.kanidm.loadbalancer.server.scheme=https
       - com.centurylinklabs.watchtower.enable=true
   api:
     image: tournamentapi:latest
@@ -48,9 +50,8 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.api.entrypoints=websecure
-      - traefik.http.routers.api.rule=Host(`tournamentapi.#{SANDBOX_HOST}`)
+      - traefik.http.routers.api.rule=Host(`api.#{SANDBOX_HOST}`)
       - traefik.http.routers.api.service=api
-      - traefik.http.services.api.loadbalancer.server.port=8443
       - traefik.http.services.api.loadbalancer.server.scheme=https
       - com.centurylinklabs.watchtower.enable=true
   watchtower:
