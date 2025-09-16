@@ -1,0 +1,55 @@
+version: "3.4"
+
+services:
+  traefik:
+    image: traefik:v2.6
+    container_name: traefik
+    command:
+      - "--certificatesresolvers.http.acme.email=#{DOMAIN_REGISTER_EMAIL}"
+      - "--certificatesresolvers.http.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.http.acme.tlschallenge=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certResolver=http"
+      - "--log.level=INFO"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--serverstransport.insecureskipverify=true"
+      - com.centurylinklabs.watchtower.enable=true
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_certs:/certs:ro
+      - traefik_dynamic:/etc/traefik/dynamic:ro
+    ports:
+      - "443:443"
+  kanidm:
+    container_name: kanidm
+    image: kanidm/server:devel
+    restart: unless-stopped
+    volumes:
+      - kanidm_data:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.kanidm.entrypoints=websecure
+      - traefik.http.routers.kanidm.rule=Host(`auth.#{SANDBOX_HOST}`)
+      - traefik.http.routers.kanidm.service=kanidm
+      - traefik.http.services.kanidm.loadbalancer.server.port=8443
+      - traefik.http.services.kanidm.loadbalancer.server.scheme=https
+      - com.centurylinklabs.watchtower.enable=true
+  watchtower:
+    image: containrrr/watchtower:latest
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      - "--rolling-restart"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+volumes:
+  kanidm_data: {}
+  traefik_certs: {}
+  traefik_dynamic: {}
+
