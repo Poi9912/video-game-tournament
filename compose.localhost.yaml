@@ -1,7 +1,7 @@
 name: tournament-local
 services:
   traefik:
-    image: traefik:v2.6
+    image: traefik:v3.5.2
     container_name: traefik
     security_opt:
       - no-new-privileges:true
@@ -71,7 +71,8 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
   mocks:
-    build: mock/.
+    # build: mock/.
+    image: stoplight/prism:5
     restart: unless-stopped
     expose:
       - 4010
@@ -80,5 +81,7 @@ services:
     depends_on:
       api:
         condition: service_started
+    command: 'mock -h 0.0.0.0 http://api:3000/v1/docs/json -p 4010'
+
 # volumes:
 #   kanidm_data: {}

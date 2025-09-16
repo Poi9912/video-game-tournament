@@ -1,7 +1,7 @@
 name: agriculture-sandbox
 services:
   traefik:
-    image: traefik:v2.6
+    image: traefik:v3.5.2
     container_name: traefik
     command:
       - "--certificatesresolvers.http.acme.email=#{DOMAIN_REGISTER_EMAIL}"
