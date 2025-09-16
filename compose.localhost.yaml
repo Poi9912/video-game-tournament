@@ -1,40 +1,64 @@
-version: "3.4"
-
+name: tournament-local
 services:
   traefik:
     image: traefik:v2.6
     container_name: traefik
+    security_opt:
+      - no-new-privileges:true
     command:
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.tls=true"
-      - "--log.level=INFO"
+      - "--api.insecure=false"
+      - "--api.dashboard=true"
       - "--providers.docker=true"
-      - "--providers.docker.exposedByDefault=false"
-      - "--providers.docker.network=proxy"
-      - com.centurylinklabs.watchtower.enable=true
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.websecure.http.tls=true"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./auth/certs:/certs:ro
-      - ./auth/dynamic:/etc/traefik/dynamic:ro
+      - ./proxy/certs:/certs:ro
+      - ./proxy/dynamic:/etc/traefik/dynamic:ro
     ports:
+      - 80:80
       - 443:443
       - 8080:8080
-    networks:
-      - proxy
-  kanidm:
-    container_name: kanidm
-    image: kanidm/server:devel
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls=true"
+  # kanidm:
+  #   container_name: kanidm
+  #   image: kanidm/server:devel
+  #   restart: unless-stopped
+  #   volumes:
+  #     - kanidm_data:/data
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.kanidm.rule=Host(`kanidm.localhost`)
+  #     - traefik.http.routers.kanidm.service=kanidm
+  #     - com.centurylinklabs.watchtower.enable=true
+  api:
+    build: api/.
     restart: unless-stopped
-    volumes:
-      - kanidm_data:/data
+    environment:
+      - BASEURL=http://mocks:9000
+      - TIMEOUT=5000
+      - APIPORT=3000
+      - HOST=tournamentapi.localhost
+      - APIVERSION=v1
+      - ENV=sb
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
     labels:
       - traefik.enable=true
-      - traefik.http.routers.kanidm.entrypoints=websecure
-      - traefik.http.routers.kanidm.rule=Host(`auth.localhost`)
-      - traefik.http.routers.kanidm.service=kanidm
-      - traefik.http.services.kanidm.loadbalancer.server.port=8443
-      - traefik.http.services.kanidm.loadbalancer.server.scheme=https
+      - traefik.http.routers.api.rule=Host("api.localhost")
       - com.centurylinklabs.watchtower.enable=true
   watchtower:
     image: containrrr/watchtower:latest
@@ -47,17 +71,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - com.centurylinklabs.watchtower.enable=true
-  tournamentapi:
-    image: tournamentapi:latest
-    restart: unless-stopped
-    environment:
-      - BASEURL=http://mocks:9000
-      - TIMEOUT=5000
-      - APIPORT=3000
-    ports:
-      - 3000:3000
-volumes:
-  kanidm_data: {}
-networks:
-  proxy:
-    name: proxy
+# volumes:
+#   kanidm_data: {}

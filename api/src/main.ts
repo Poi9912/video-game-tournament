@@ -14,15 +14,15 @@ async function bootstrap() {
 
     const documentFactory  = () => SwaggerModule.createDocument(app, config);
 
-    const swaggerPathPrefix = 'api/' + (process.env.APIVERSION ?? 'v1' ) + '/docs';
+    const swaggerPathPrefix = (process.env.APIVERSION ?? 'v1' ) + '/docs';
     SwaggerModule.setup(swaggerPathPrefix,app,documentFactory)
 
-    const prefix = 'api/'+ (process.env.APIVERSION ?? 'v1');
+    const prefix = (process.env.APIVERSION ?? 'v1');
     app.setGlobalPrefix(prefix);
 
     app.set('query parser', 'extended');
 
-    await app.listen(process.env.APIPORT ?? 3000, '0.0.0.0');
+    await app.listen(process.env.APIPORT ?? 3000,'0.0.0.0');
 }
 
 bootstrap();

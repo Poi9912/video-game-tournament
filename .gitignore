@@ -7,3 +7,4 @@
 api/build.sh
 *.sh
 auth/
+proxy/

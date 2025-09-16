@@ -1,5 +1,4 @@
-version: "3.4"
-
+name: agriculture-sandbox
 services:
   traefik:
     image: traefik:v2.6
@@ -36,6 +35,23 @@ services:
       - traefik.http.routers.kanidm.service=kanidm
       - traefik.http.services.kanidm.loadbalancer.server.port=8443
       - traefik.http.services.kanidm.loadbalancer.server.scheme=https
+      - com.centurylinklabs.watchtower.enable=true
+  api:
+    image: tournamentapi:latest
+    restart: unless-stopped
+    environment:
+      - BASEURL=http://mocks:9000
+      - TIMEOUT=5000
+      - APIPORT=3000
+    ports:
+      - 3000:3000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.rule=Host(`tournamentapi.#{SANDBOX_HOST}`)
+      - traefik.http.routers.api.service=api
+      - traefik.http.services.api.loadbalancer.server.port=8443
+      - traefik.http.services.api.loadbalancer.server.scheme=https
       - com.centurylinklabs.watchtower.enable=true
   watchtower:
     image: containrrr/watchtower:latest
