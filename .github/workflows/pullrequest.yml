@@ -1,0 +1,10 @@
+name: build pull request
+on: workflow_call
+# on:
+#   pull_request:
+#     branches: ['main']
+#     paths: ['api/**','unit-testing/**']
+jobs:
+  call-test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit

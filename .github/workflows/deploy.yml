@@ -1,0 +1,74 @@
+name: deploy
+
+on: workflow_call
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4.1.7
+              with:
+                fetch-depth: 0
+            - name: Get Previous tag
+              id: actualtag
+              uses: "WyriHaximus/github-action-get-previous-tag@v1"
+              with:
+                fallback: latest # Optional fallback tag to use when no tag can be found
+            - run: echo $"${{steps.actualtag.outputs.tag}}"
+            - name: download artifacts
+              uses: houqp/download-release-assets-action@v1.0.1
+              with: 
+                repo: Poi9912/agriculture
+                match: "agriculture.zip"
+                rename: agriculture.zip
+            - name: unzip and delete original
+              run: |
+                unzip -o agriculture.zip
+                ls -la
+                rm agriculture.zip
+                rm compose.local.yaml
+                rm compose.testing.yaml
+                rm asset.url
+                rm monitoring/grafana/custom.local.ini
+                ls -la
+            - name: replace variables
+              uses: cschleiden/replace-tokens@v1
+              env:
+                SANDBOX_HOST: ${{ secrets.DEPLOY_HOST}}
+                DOMAIN_REGISTER_EMAIL: ${{ secrets.DOMAIN_REGISTER_EMAIL }}
+                GRAFANA_USER: ${{ secrets.DEPLOY_GRAFANA_USER }}
+                GRAFANA_PASSWORD: ${{ secrets.DEPLOY_GRAFANA_PASS }}
+                RED_URL: ${{ secrets.DEPLOY_RED_URL }}
+                IMAGE_VERSION: ${{ steps.actualtag.outputs.tag }}
+              with:
+                tokenPrefix: '#{'
+                tokenSuffix: '}#'
+                files: '["compose.sandbox.yaml","monitoring/grafana/custom.ini"]'
+            - name: renames compose
+              run: mv compose.sandbox.yaml compose.yaml
+            - name: zips to ship into server
+              run: zip -r agriculture.zip *
+            - name: copy to server
+              uses: kostya-ten/ssh-server-deploy@v4
+              with:
+                host: ${{ secrets.DEPLOY_HOST }}
+                port: ${{ secrets.DEPLOY_PORT }}
+                username: ${{ secrets.DEPLOY_USER }}
+                private_key: ${{ secrets.DEPLOY_SSH_KEY }}
+                scp_source: agriculture.zip
+                scp_target: ${{ secrets.DEPLOY_WORKDIR }}
+                            
+            - name: SSH commands
+              uses: nekiro/ssh-job@main
+              with: 
+                host: ${{ secrets.DEPLOY_HOST }}
+                user: ${{ secrets.DEPLOY_USER }}
+                key: ${{ secrets.DEPLOY_SSH_KEY }}
+                port: ${{ secrets.DEPLOY_PORT }}
+                command: |
+                    cd ${{ secrets.DEPLOY_WORKDIR }}
+                    unzip -o agriculture.zip && rm agriculture.zip
+                    docker compose down -v microcks api importer
+                    docker compose pull api microcks api
+                    docker compose up -d --remove-orphans
+                    exit
