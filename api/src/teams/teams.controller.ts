@@ -1,29 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { TeamsService } from "./teams.service";
+import { TeamReqDto } from "./dto/teamsreq.dto";
 
 @Controller('teams')
 export class TeamsController {
+    constructor(private readonly teamsService: TeamsService){}
+
     @Get()
-    findAll() {
-        return 'teams';
+    @HttpCode(200)
+    async findAll() {
+        return this.teamsService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findTeams(@Param() params: any): string {
-        return `team by id: #${params.id}`;
+    async findTeams(@Param() params: any) {
+        return this.teamsService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createTeams(): string {
-        return 'creates a team';
+    async createTeams(@Body() createTeam: TeamReqDto) {
+        return this.teamsService.postCreate(createTeam);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateTeams(@Param() params: any): string {
-        return `modifies team by id: #${params.id}`;
+    async updateTeams(@Param() params: any, @Body() updateTeam: TeamReqDto) {
+        return this.teamsService.patchModify(params.id,updateTeam);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteTeams(@Param() params: any): string {
-        return `deletes team by id: #${params.id}`;
+    async deleteTeams(@Param() params: any) {
+        return this.teamsService.deleteRecord(params.id);
     }
 }

@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
 import { DonationReqDto } from "./dto/donationreq.dto";
 import { DonationsService } from './donations.service';
-import { DonationResDto } from './dto/donationres.dto';
-import { map } from "rxjs";
 
 
 @Controller('donations')
@@ -16,8 +14,8 @@ export class DonationsController {
     }
     @Get(':id')
     @HttpCode(200)
-    findDonation(@Param() params: any): string {
-        return `donation by id: #${params.id}`;
+    async findDonation(@Param() params: any) {
+        return this.donationsService.getById(params.id);
     }
 
     @Post()
@@ -27,12 +25,12 @@ export class DonationsController {
     }
     @Patch(':id')
     @HttpCode(200)
-    updateDonation(@Param() params: any, @Body() updateDonation: DonationReqDto) {
-        return `modifies donation by id: #${params.id}`;
+    async updateDonation(@Param() params: any, @Body() updateDonation: DonationReqDto) {
+        return this.donationsService.patchModify(params.id, updateDonation);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteDonation(@Param() params: any): string {
-        return `deletes donation by id: #${params.id}`;
+    async deleteDonation(@Param() params: any) {
+        return this.donationsService.deleteRecord(params.id);
     }
 }

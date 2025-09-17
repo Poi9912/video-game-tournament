@@ -15,7 +15,7 @@ import { VideogametypesController } from './videogamestypes/videogametypes.contr
 import { PlatformsService } from './platforms/platforms.service';
 import { PrizesService } from './prizes/prizes.service';
 import { TeamsService } from './teams/teams.service';
-import { TournamentService } from './tournaments/tournaments.service';
+import { TournamentsService } from './tournaments/tournaments.service';
 import { UsersService } from './users/users.service';
 import { VideogamesService } from './videogames/videogames.service';
 import { VideogametypesService } from './videogamestypes/videogametypes.service';
@@ -23,11 +23,14 @@ import { HealthController } from './health/health.controller';
 import { MatchesController } from './matches/matches.controller';
 import { MatchesService } from './matches/matches.service';
 import { HttpModule } from '@nestjs/axios';
+import { TransactionsService } from './transactions/transactions.service';
 
 @Module({
-	imports: [HttpModule.register({
-		timeout: 5000,
-		maxRedirects: 5,
+	imports: [HttpModule.registerAsync({
+		useFactory: () => ({
+			timeout: 5000,
+			maxRedirects: 5,
+		})
 	})],
 	controllers: [
 		DonationsController,
@@ -50,7 +53,8 @@ import { HttpModule } from '@nestjs/axios';
 		PlatformsService,
 		PrizesService,
 		TeamsService,
-		TournamentService,
+		TournamentsService,
+		TransactionsService,
 		UsersService,
 		VideogamesService,
 		VideogametypesService

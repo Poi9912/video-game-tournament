@@ -47,7 +47,7 @@ services:
     build: api/.
     restart: unless-stopped
     environment:
-      - BASEURL=http://mocks:4010
+      - ENDPOINT=http://mocks:4010/v1
       - APIPORT=3000
       - HOST=tournamentapi.localhost
       - APIVERSION=v1

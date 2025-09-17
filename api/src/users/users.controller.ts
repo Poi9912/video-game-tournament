@@ -1,29 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { UserReqDto } from "./dto/usersreq.dto";
 
 @Controller('users')
 export class UsersController {
+    constructor(private readonly usersService: UsersService){}
+
     @Get()
-    findAll() {
-        return 'users';
+    @HttpCode(200)
+    async findAll() {
+        return this.usersService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findUser(@Param() params: any): string {
-        return `user by id: #${params.id}`;
+    async findUser(@Param() params: any) {
+        return this.usersService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createUser(): string {
-        return 'creates a user';
+    async createUser(@Body() createUser: UserReqDto) {
+        return this.usersService.postCreate(createUser);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateUser(@Param() params: any): string {
-        return `modifies user by id: #${params.id}`;
+    async updateUser(@Param() params: any, @Body() updateUser: UserReqDto) {
+        return this.usersService.patchModify(params.id, updateUser);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteUser(@Param() params: any): string {
-        return `deletes user by id: #${params.id}`;
+    async deleteUser(@Param() params: any) {
+        return this.usersService.deleteRecord(params.id);
     }
 }

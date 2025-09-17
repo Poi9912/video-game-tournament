@@ -1,29 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { VideogamesService } from "./videogames.service";
+import { VideogameReqDto } from "./dto/videogamesreq.dto";
 
 @Controller('videogames')
 export class VideogamesController {
+    constructor(private readonly videogamesService: VideogamesService){}
+
     @Get()
-    findAll() {
-        return 'videogames';
+    @HttpCode(200)
+    async findAll() {
+        return this.videogamesService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findVideogame(@Param() params: any): string {
-        return `videogame by id: #${params.id}`;
+    async findVideogame(@Param() params: any) {
+        return this.videogamesService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createVideogame(): string {
-        return 'creates a videogame';
+    async createVideogame(@Body() createVideogame: VideogameReqDto) {
+        return this.videogamesService.postCreate(createVideogame);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateVideogame(@Param() params: any): string {
-        return `modifies videogame by id: #${params.id}`;
+    async updateVideogame(@Param() params: any, @Body() updateVideogame: VideogameReqDto) {
+        return this.videogamesService.patchModify(params.id, updateVideogame);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteVideogame(@Param() params: any): string {
-        return `deletes videogame by id: #${params.id}`;
+    async deleteVideogame(@Param() params: any) {
+        return this.videogamesService.deleteRecord(params.id);
     }
 }

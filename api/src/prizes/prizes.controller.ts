@@ -1,28 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { PrizesService } from "./prizes.service";
+import { PrizesReqDto } from "./dto/prizesreq.dto";
+
 @Controller('prizes')
 export class PrizesController {
+    constructor(private readonly prizesService: PrizesService){}
+
     @Get()
-    findAll() {
-        return 'prizes';
+    @HttpCode(200)
+    async findAll() {
+        return this.prizesService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findPrize(@Param() params: any): string {
-        return `prize by id: #${params.id}`;
+    async findPrize(@Param() params: any) {
+        return this.prizesService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createPrize(): string {
-        return 'creates a prize';
+    async createPrize(@Body() createPrize: PrizesReqDto) {
+        return this.prizesService.postCreate(createPrize);
     }
     @Patch(':id')
     @HttpCode(200)
-    updatePrize(@Param() params: any): string {
-        return `modifies prize by id: #${params.id}`;
+    async updatePrize(@Param() params: any, @Body() updatePrize: PrizesReqDto) {
+        return this.prizesService.patchModify(params.id, updatePrize);
     }
     @Delete(':id')
     @HttpCode(200)
-    deletePrize(@Param() params: any): string {
-        return `deletes prize by id: #${params.id}`;
+    async deletePrize(@Param() params: any) {
+        return this.prizesService.deleteRecord(params.id);
     }
 }

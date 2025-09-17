@@ -1,29 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { MatchesReqDto } from "./dto/matchesreq.dto";
+import { MatchesService } from "./matches.service";
+
 
 @Controller('matches')
 export class MatchesController {
+    constructor(private readonly matchesService: MatchesService){}
+
     @Get()
-    findAll() {
-        return 'matches';
+    async findAll() {
+        return this.matchesService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findMatch(@Param() params: any): string {
-        return `match by id: #${params.id}`;
+    async findMatch(@Param() params: any) {
+        return this.matchesService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createMatch(): string {
-        return 'creates a match';
+    async createMatch(@Body() createMatch: MatchesReqDto) {
+        return this.matchesService.postCreate(createMatch);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateMatch(@Param() params: any): string {
-        return `modifies match by id: #${params.id}`;
+    async updateMatch(@Param() params: any, @Body() updateMatch: MatchesReqDto) {
+        return this.matchesService.patchModify(params.id, updateMatch);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteMatch(@Param() params: any): string {
-        return `deletes match by id: #${params.id}`;
+    async deleteMatch(@Param() params: any) {
+        return this.matchesService.deleteRecord(params.id);
     }
 }

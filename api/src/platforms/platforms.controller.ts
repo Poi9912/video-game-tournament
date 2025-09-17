@@ -1,29 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { PlatformsService } from "./platforms.service";
+import { PlatformReqDto } from "./dto/platformreq.dto";
 
 @Controller('platforms')
 export class PlatformsController {
+    constructor(private readonly platformsService: PlatformsService){}
+
     @Get()
-    findAll() {
-        return 'platforms';
+    @HttpCode(200)
+    async findAll() {
+        return this.platformsService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findPlatform(@Param() params: any): string {
-        return `platform by id: #${params.id}`;
+    async findPlatform(@Param() params: any) {
+        return this.platformsService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createPlatform(): string {
-        return 'creates a platform';
+    async createPlatform(@Body() createPlatform: PlatformReqDto) {
+        return this.platformsService.postCreate(createPlatform);
     }
     @Patch(':id')
     @HttpCode(200)
-    updatePlatform(@Param() params: any): string {
-        return `modifies platform by id: #${params.id}`;
+    async updatePlatform(@Param() params: any, @Body() updatePlatform: PlatformReqDto) {
+        return this.platformsService.patchModify(params.id,updatePlatform);
     }
     @Delete(':id')
     @HttpCode(200)
-    deletePlatform(@Param() params: any): string {
-        return `deletes platform by id: #${params.id}`;
+    async deletePlatform(@Param() params: any) {
+        return this.platformsService.deleteRecord(params.id);
     }
 }

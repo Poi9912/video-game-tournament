@@ -1,32 +1,36 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { EntryticketsService } from "./entrytickets.service";
+import { EntryTicketReqDto } from "./dto/entryticketsreq.dto";
 
 @ApiTags('Tickets')
 @Controller('entry-tickets')
 export class EntryticketsController {
+    constructor(private readonly entryticketsService: EntryticketsService){}
+
     @Get()
     @HttpCode(200)
-    findAll() {
-        return 'entry-tickets';
+    async findAll() {
+        return this.entryticketsService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findEntryTicket(@Param() params: any): string {
-        return `entry-ticket by id: #${params.id}`;
+    async findEntryTicket(@Param() params: any) {
+        return this.entryticketsService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createEntryTicket(): string {
-        return 'creates a entry-ticket';
+    async createEntryTicket(@Body() createEntryTicket: EntryTicketReqDto) {
+        return this.entryticketsService.postCreate(createEntryTicket);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateEntryTicket(@Param() params: any): string {
-        return `modifies entry-ticket by id: #${params.id}`;
+    async updateEntryTicket(@Param() params: any, @Body() updateEntryTicket: EntryTicketReqDto) {
+        return this.entryticketsService.patchModify(params.id, updateEntryTicket);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteEntryTicket(@Param() params: any): string {
-        return `deletes entry-ticket by id: #${params.id}`;
+    async deleteEntryTicket(@Param() params: any) {
+        return this.entryticketsService.deleteRecord(params.id);
     }
 }

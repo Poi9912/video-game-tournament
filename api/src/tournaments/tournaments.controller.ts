@@ -1,29 +1,34 @@
-import { Controller, Get, Post, Req, HttpCode, Patch, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, HttpCode, Patch, Delete, Param, Body } from "@nestjs/common";
+import { TournamentsService } from "./tournaments.service";
+import { TournamentReqDto } from "./dto/tournamentsreq.dto";
 
 @Controller('tournaments')
 export class TournamentsController {
+    constructor(private readonly tournamentsService: TournamentsService){}
+
     @Get()
-    findAll() {
-        return 'tournaments';
+    @HttpCode(200)
+    async findAll() {
+        return this.tournamentsService.getAll();
     }
     @Get(':id')
     @HttpCode(200)
-    findTourament(@Param() params: any): string {
-        return `tourament by id: #${params.id}`;
+    async findTourament(@Param() params: any) {
+        return this.tournamentsService.getById(params.id);
     }
     @Post()
     @HttpCode(201)
-    createTourament(): string {
-        return 'creates a tourament';
+    async createTourament(@Body() createTournament: TournamentReqDto) {
+        return this.tournamentsService.postCreate(createTournament);
     }
     @Patch(':id')
     @HttpCode(200)
-    updateTourament(@Param() params: any): string {
-        return `modifies tourament by id: #${params.id}`;
+    async updateTourament(@Param() params: any, @Body() updateTournament: TournamentReqDto) {
+        return this.tournamentsService.patchModify(params.id, updateTournament);
     }
     @Delete(':id')
     @HttpCode(200)
-    deleteTourament(@Param() params: any): string {
-        return `deletes tourament by id: #${params.id}`;
+    async deleteTourament(@Param() params: any) {
+        return this.tournamentsService.deleteRecord(params.id);
     }
 }
