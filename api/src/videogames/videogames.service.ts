@@ -1,64 +1,47 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { VideogameReqDto } from './dto/videogamesreq.dto';
-import { catchError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AxiosError, AxiosResponse } from 'axios';
 
 @Injectable()
 export class VideogamesService {
-  constructor(private readonly httpService: HttpService) {}
+  private readonly url: string;
+  constructor(private readonly httpService: HttpService) {
+    this.url = `${process.env.ENDPOINT}/videogames`
+  }
+
+  private handleError(error: AxiosError) {
+    console.error(error);
+    return throwError(() => new Error('Axios Error'))
+  }
+
+  private handleRespose<T>() {
+    return (source: Observable<AxiosResponse<T>>) =>
+      source.pipe(
+        map((response: AxiosResponse) => response.data),
+        catchError(this.handleError)
+      )
+  }
 
   async getAll(): Promise<any> {
-    const url = `${process.env.ENDPOINT}/videogames`;
-    return this.httpService.get(url).pipe(
-      map((response: AxiosResponse) => response.data),
-      catchError((error: AxiosError) => {
-        console.error(error
-        );
-        throw 'Axios Error';
-      })
-    );
+    return this.httpService.get(this.url).pipe(this.handleRespose());
   }
 
   async getById(id: string): Promise<any> {
-    const url = `${process.env.ENDPOINT}/videogames/${id}`;
-    return this.httpService.get(url).pipe(
-      map((response: AxiosResponse) => response.data),
-      catchError((error: AxiosError) => {
-        console.error(error
-        );
-        throw 'Axios Error';
-      })
-    );
+    return this.httpService.get(`${this.url}/${id}`).pipe(this.handleRespose());
   }
 
   async postCreate(body: VideogameReqDto) {
-    const url = `${process.env.ENDPOINT}/videogames`;
-    return this.httpService.post(url, body);
+    return this.httpService.post(this.url, body).pipe(this.handleRespose());
   }
 
   async patchModify(id: string, body: VideogameReqDto) {
-    const url = `${process.env.ENDPOINT}/videogames/${id}`;
-    return this.httpService.patch(url, body).pipe(
-      map((response: AxiosResponse) => response.data),
-      catchError((error: AxiosError) => {
-        console.error(error
-        );
-        throw 'Axios Error';
-      })
-    );
+    return this.httpService.patch(`${this.url}/${id}`, body).pipe(this.handleRespose());
   }
 
   async deleteRecord(id: string) {
-    const url = `${process.env.ENDPOINT}/videogames/${id}`;
-    return this.httpService.delete(url).pipe(
-      map((response: AxiosResponse) => response.data),
-      catchError((error: AxiosError) => {
-        console.error(error
-        );
-        throw 'Axios Error';
-      })
-    );
+    return this.httpService.delete(`${this.url}/${id}`).pipe(this.handleRespose());
   }
 }

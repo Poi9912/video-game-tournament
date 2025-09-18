@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UnauthorizedDto } from './global/Unauthorized.dto';
 import { NotFoundDto } from './global/NotFound.dto';
 import { InternalServerErrorDto } from './global/InternalServerError.dto';
+import { ForbiddenDto } from './global/Forbidden.dto';
 
 async function bootstrap() {
     //implements NestJS with express
@@ -19,6 +20,11 @@ async function bootstrap() {
             status: 401,
             description: 'Unauthorized',
             type: UnauthorizedDto
+        })
+        .addGlobalResponse({
+            status: 403,
+            description: 'Forbidden',
+            type: ForbiddenDto
         })
         .addGlobalResponse({
             status: 404,

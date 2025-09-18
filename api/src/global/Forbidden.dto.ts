@@ -1,19 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class UnauthorizedDto {
+export class ForbiddenDto {
     @ApiProperty({
         description: 'A message indicating the outcome of the operation',
-        example: 'Authorization not valid for this operation'
+        example: 'Does not have permissions for this resource'
     })
     message: string
     @ApiProperty({
         description: 'The status code of the response',
-        example: 401,
+        example: 403,
     })
     statusCode: number;
     @ApiProperty({
         description: 'Error description',
-        example: 'Unauthorized'
+        example: 'Forbidden'
     })
     error: string
 }
