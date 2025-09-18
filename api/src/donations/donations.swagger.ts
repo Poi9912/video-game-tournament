@@ -1,26 +1,62 @@
-import { applyDecorators } from "@nestjs/common";
-import { ApiParam, ApiResponse } from "@nestjs/swagger";
+import { applyDecorators } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { DonationResDto } from './dto/donationres.dto';
 
-export const DonationsSwagger = {
-    ApiIdParam: () => 
-        ApiParam({ name: 'id', description: 'The unique ID of the Donation', required: true, type: 'string' })
-    ,
+const DonationIdParam = () =>
+  ApiParam({
+    name: 'id',
+    description: 'The unique ID of the Donation',
+    required: true,
+    type: 'string',
+  });
 
-    ApiOkArrayResponse: () => 
-        ApiResponse({ status: 200, description: 'List of all donations', type: DonationResDto, isArray: true })
-    ,
+const OkResponse = (description: string) =>
+  ApiResponse({ status: 200, description, type: DonationResDto });
 
-    ApiOkSingleResponse: () =>
-        ApiResponse({ status: 200, description: 'Donation by ID', type: DonationResDto })
-    ,
+const OkArrayResponse = (description: string) =>
+  ApiResponse({ status: 200, description, type: DonationResDto, isArray: true });
 
-    ApiCreatedResponse: () =>
-        ApiResponse({ status: 201, description: 'New Donation', type: DonationResDto })
-    ,
+const CreatedResponse = (description: string) =>
+  ApiResponse({ status: 201, description, type: DonationResDto });
 
-    ApiNoContentResponse: () =>
-        ApiResponse({ status: 204, description: 'Delete donation by ID' })
-    ,
-}
+const NoContentResponse = (description: string) =>
+  ApiResponse({ status: 204, description });
 
+const ControllerDocs = () => applyDecorators(ApiTags('Donations'));
+
+export default {
+  ControllerDocs,
+
+  FindAllDocs: () =>
+    applyDecorators(
+      ApiOperation({ summary: 'Get all donations' }),
+      OkArrayResponse('List of all donations'),
+    ),
+
+  FindOneDocs: () =>
+    applyDecorators(
+      ApiOperation({ summary: 'Get donation by ID' }),
+      DonationIdParam(),
+      OkResponse('Donation by ID'),
+    ),
+
+  CreateDocs: () =>
+    applyDecorators(
+      ApiOperation({ summary: 'Register new donation' }),
+      CreatedResponse('New Donation'),
+    ),
+
+  UpdateDocs: () =>
+    applyDecorators(
+      ApiOperation({ summary: 'Updates a donation by ID' }),
+      DonationIdParam(),
+      OkResponse('Update donation by ID'),
+    ),
+
+  DeleteDocs: () =>
+    applyDecorators(
+      ApiOperation({ summary: 'Deletes a donation by ID' }),
+      DonationIdParam(),
+      NoContentResponse('Delete donation by ID'),
+    ),
+};
