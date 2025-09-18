@@ -11,7 +11,6 @@ export class VideogamesService {
 
   async getAll(): Promise<any> {
     const url = `${process.env.ENDPOINT}/videogames`;
-    console.log(`Resend to ${url}`);
     return this.httpService.get(url).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -24,7 +23,6 @@ export class VideogamesService {
 
   async getById(id: string): Promise<any> {
     const url = `${process.env.ENDPOINT}/videogames/${id}`;
-    console.log(`Resend to ${url}`);
     return this.httpService.get(url).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -37,13 +35,11 @@ export class VideogamesService {
 
   async postCreate(body: VideogameReqDto) {
     const url = `${process.env.ENDPOINT}/videogames`;
-    console.log(`Resend to ${url}`);
     return this.httpService.post(url, body);
   }
 
   async patchModify(id: string, body: VideogameReqDto) {
     const url = `${process.env.ENDPOINT}/videogames/${id}`;
-    console.log(`Resend to ${url}`);
     return this.httpService.patch(url, body).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -56,7 +52,6 @@ export class VideogamesService {
 
   async deleteRecord(id: string) {
     const url = `${process.env.ENDPOINT}/videogames/${id}`;
-    console.log(`Resend to ${url}`);
     return this.httpService.delete(url).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {

@@ -11,7 +11,6 @@ export class TransactionsService {
 
   async getAll(): Promise<any> {
     const url = `${process.env.ENDPOINT}/transactions`;
-    console.log(`Resend to ${url}`);
     return this.httpService.get(url).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -24,7 +23,6 @@ export class TransactionsService {
 
   async getById(id: string): Promise<any> {
     const url = `${process.env.ENDPOINT}/transactions/${id}`;
-    console.log(`Resend to ${url}`);
     return this.httpService.get(url).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -37,7 +35,6 @@ export class TransactionsService {
 
   async postCreate(body: TransactionReqDto) {
     const url = `${process.env.ENDPOINT}/transactions`;
-    console.log(`Resend to ${url}`);
     return this.httpService.post(url, body).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -50,7 +47,6 @@ export class TransactionsService {
 
   async patchModify(id: string, body: TransactionReqDto) {
     const url = `${process.env.ENDPOINT}/transactions/${id}`;
-    console.log(`Resend to ${url}`);
     return this.httpService.patch(url, body).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {
@@ -63,7 +59,6 @@ export class TransactionsService {
 
   async deleteRecord(id: string) {
     const url = `${process.env.ENDPOINT}/transactions/${id}`;
-    console.log(`Resend to ${url}`);
     return this.httpService.delete(url).pipe(
       map((response: AxiosResponse) => response.data),
       catchError((error: AxiosError) => {

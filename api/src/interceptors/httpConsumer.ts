@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
 export class HttpServiceInterceptor implements NestInterceptor {
   constructor(private httpService: HttpService) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-
     const ctx = context.switchToHttp();
     const messageId = ctx.getRequest().headers['message-id'];
-
+    const req = ctx.getRequest();
+    console.log(`Forward to ${process.env.ENDPOINT}${req.url}`);
     if (messageId) {
       this.httpService.axiosRef.defaults.headers.common['message-id'] = messageId;
     }
