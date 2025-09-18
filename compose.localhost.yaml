@@ -82,7 +82,7 @@ services:
     depends_on:
       api:
         condition: service_started
-    command: 'mock -h 0.0.0.0 -d http://api:3000/v1/docs/json -p 4010'
+    command: 'mock -h 0.0.0.0 http://api:3000/v1/docs/json -p 4010'
 
 # volumes:
 #   kanidm_data: {}

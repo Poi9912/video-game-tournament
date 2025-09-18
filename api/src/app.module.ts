@@ -24,6 +24,8 @@ import { MatchesController } from './matches/matches.controller';
 import { MatchesService } from './matches/matches.service';
 import { HttpModule } from '@nestjs/axios';
 import { TransactionsService } from './transactions/transactions.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpServiceInterceptor } from './interceptors/httpConsumer';
 
 @Module({
 	imports: [HttpModule.registerAsync({
@@ -57,7 +59,11 @@ import { TransactionsService } from './transactions/transactions.service';
 		TransactionsService,
 		UsersService,
 		VideogamesService,
-		VideogametypesService
+		VideogametypesService,
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: HttpServiceInterceptor
+		}
 	],
 })
 
