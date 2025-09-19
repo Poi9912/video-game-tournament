@@ -3,6 +3,7 @@
 */dist/
 */.prettierrc
 */.env
+.env
 api/build.sh
 auth/
 proxy/

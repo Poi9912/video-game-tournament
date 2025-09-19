@@ -32,17 +32,6 @@ services:
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.tls=true"
       - com.centurylinklabs.watchtower.enable=true
-  # kanidm:
-  #   container_name: kanidm
-  #   image: kanidm/server:devel
-  #   restart: unless-stopped
-  #   volumes:
-  #     - kanidm_data:/data
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.http.routers.kanidm.rule=Host(`kanidm.localhost`)
-  #     - traefik.http.routers.kanidm.service=kanidm
-  #     - com.centurylinklabs.watchtower.enable=true
   api:
     build: api/.
     restart: unless-stopped
@@ -70,7 +59,6 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
   mocks:
-    # build: mock/.
     image: stoplight/prism:5
     restart: unless-stopped
     labels:
@@ -83,6 +71,3 @@ services:
       api:
         condition: service_started
     command: 'mock -h 0.0.0.0 http://api:3000/v1/docs/json -p 4010'
-
-# volumes:
-#   kanidm_data: {}
