@@ -60,7 +60,7 @@ services:
       - com.centurylinklabs.watchtower.enable=true
   mocks:
     # build: mock/.
-    image: stoplight/prism:latest
+    image: stoplight/prism:5
     restart: unless-stopped
     labels:
       - com.centurylinklabs.watchtower.enable=true

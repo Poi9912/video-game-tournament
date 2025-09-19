@@ -1,8 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export class TeamResDto {
-    @ApiProperty()
+    @ApiProperty({
+        description: 'The User ID of this Team',
+        example: 421
+    })
     id: number;
-    @ApiProperty()
+    @ApiProperty({
+        description: 'The name of the Team',
+        example: 'Centinels'
+    })
     name: string;
 }
