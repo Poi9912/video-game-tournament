@@ -1,8 +1,8 @@
-name: tournament-local
+name: tournament
 services:
   traefik:
     image: traefik:v3.5.2
-    container_name: traefik
+    hostname: proxy.localhost
     security_opt:
       - no-new-privileges:true
     command:
@@ -24,7 +24,7 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 8080:8080
+      # - 8080:8080
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
@@ -32,17 +32,6 @@ services:
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.tls=true"
       - com.centurylinklabs.watchtower.enable=true
-  # kanidm:
-  #   container_name: kanidm
-  #   image: kanidm/server:devel
-  #   restart: unless-stopped
-  #   volumes:
-  #     - kanidm_data:/data
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.http.routers.kanidm.rule=Host(`kanidm.localhost`)
-  #     - traefik.http.routers.kanidm.service=kanidm
-  #     - com.centurylinklabs.watchtower.enable=true
   api:
     build: api/.
     restart: unless-stopped
@@ -71,7 +60,7 @@ services:
       - com.centurylinklabs.watchtower.enable=true
   mocks:
     # build: mock/.
-    image: stoplight/prism:5
+    image: stoplight/prism:latest
     restart: unless-stopped
     labels:
       - com.centurylinklabs.watchtower.enable=true
@@ -83,6 +72,42 @@ services:
       api:
         condition: service_started
     command: 'mock -h 0.0.0.0 http://api:3000/v1/docs/json -p 4010'
-
-# volumes:
-#   kanidm_data: {}
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HOSTNAME: auth.localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    depends_on:
+      - keycloakdb
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.keycloak_web.rule=Host("auth.localhost")
+      - com.centurylinklabs.watchtower.enable=true
+  keycloakdb:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+volumes:
+  postgres_data:
